@@ -8,14 +8,17 @@ import { z } from "zod"
 import { Loader } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
-import { useCreateUserAccountMutation } from "@/lib/react-query/queriesAndMutations"
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations"
 
 
 
 const SignupForm = () => {
     const { toast } = useToast();
 
-     const { mutateAsync: createUserAccount, isLoading: isCreatingUser } = useCreateUserAccountMutation();
+     const { mutateAsync: createUserAccount, isLoading: isCreatingUser } = useCreateUserAccount();
+
+     const { mutateAsync: signInAccount, isLoading: isSigningIn } = 
+     useSignInAccount();
     // 1. Define your form.
     const form = useForm<z.infer<typeof SignupValidation>>({
       resolver: zodResolver(SignupValidation),
@@ -32,8 +35,16 @@ const SignupForm = () => {
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof SignupValidation>) {
       const newUser = await createUserAccount(values);
+
         if(!newUser) {
           return  toast({title: "Sign up failed. Please try again." })
+      }
+      const session = await signInAccount({
+        email: values.email,
+        password: values.password
+      })
+      if(!session) {
+        return toast({title: 'Sign in failed. Please try again.'})
       }
     }
   
