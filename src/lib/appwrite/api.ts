@@ -1,7 +1,7 @@
 import { ID, Query } from 'appwrite'
 import { INewUser } from "@/types";
 import { account, appwriteConfig, avatars, databases } from './config';
-import { Query } from '@tanstack/react-query';
+// import { Query } from '@tanstack/react-query';
 
 export async function createUserAccount(user: INewUser) {
     try{
@@ -10,7 +10,8 @@ export async function createUserAccount(user: INewUser) {
             user.email,
             user.password,
             user.name
-        );
+          );
+          
 
         if(!newAccount) throw Error;
 
@@ -20,7 +21,7 @@ export async function createUserAccount(user: INewUser) {
             name: newAccount.name,
             email: newAccount.email,
             username: user.username,
-            imageUrl: avatarUrl,
+            imageUrl: avatarUrl
         });
         
         return newUser;
@@ -43,7 +44,7 @@ export async function saveUserToDB(user: {
                 appwriteConfig.databaseId,
                 appwriteConfig.userCollectionId,
                 ID.unique(),
-                user,
+                user
             )
             return newUser;
     }catch(error) {
